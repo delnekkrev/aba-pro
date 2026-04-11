@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip3 install:*)",
+      "Bash(python3 -m markitdown \"/Users/Delnekkrev/Desktop/app_photos/BT-training-slides/BT Curriculum - Functions of Bx.pptx\")",
+      "Bash(python3 -c \":*)",
+      "Bash(python3 -c \"import pdfplumber; print\\(''''ok''''\\)\")",
+      "Bash(python3:*)",
+      "Bash(pdftoppm -jpeg -r 150 \"/Users/Delnekkrev/Desktop/app_photos/BT-training-slides/Foundations of ABA & The Role of the Behavior Technician.pdf\" /Users/Delnekkrev/Desktop/app_photos/lesson-slides/foundations_page)",
+      "Bash(ls /Users/Delnekkrev/Desktop/app_photos/lesson-slides/foundations_page*.jpg)",
+      "Bash(brew install:*)",
+      "Bash(ls /Users/Delnekkrev/Desktop/app_photos/lesson-slides/*.png)",
+      "Bash(du -sh /Users/Delnekkrev/Desktop/app_photos/Tacting Actions/*.jpg /Users/Delnekkrev/Desktop/app_photos/lesson-slides/*.jpg /Users/Delnekkrev/Desktop/app_photos/lesson-slides/*.png /Users/Delnekkrev/Desktop/app_photos/objects/*.jpg /Users/Delnekkrev/Desktop/app_photos/body-parts/*.jpg /Users/Delnekkrev/Desktop/app_photos/shapes/*.jpg /Users/Delnekkrev/Desktop/app_photos/shapes/*.png /Users/Delnekkrev/Desktop/app_photos/his-and-hers/*.jpg)",
+      "Bash(xargs du:*)",
+      "Bash(sips --help)",
+      "Bash(sips -g pixelWidth -g pixelHeight \"/Users/Delnekkrev/Desktop/app_photos/Tacting Actions/swinging.jpg\")",
+      "Bash(xargs ls:*)",
+      "WebFetch(domain:www.tealwayaba.com)",
+      "WebFetch(domain:www.instagram.com)",
+      "Bash(git remote:*)",
+      "mcp__b0095894-91fa-4a63-80bc-f2e7317e2e27__netlify-project-services-reader",
+      "Bash(gh repo:*)",
+      "mcp__b0095894-91fa-4a63-80bc-f2e7317e2e27__netlify-deploy-services-reader",
+      "mcp__b0095894-91fa-4a63-80bc-f2e7317e2e27__netlify-deploy-services-updater",
+      "Bash(npx -y @netlify/mcp@latest --site-id ce8c9cd3-962e-49f9-9cf9-5bb369b6b4d4 --proxy-path \"https://netlify-mcp.netlify.app/proxy/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..zP7l0Cmz0eNcGDFZ.PyVOz-83WHYMbbjWnB9D-PqOl-M1EgvmSL0dnkZdihSqKW3KLfc2dp56biL1hf8ZZJ-36CwagLLK8RIDAjg3Log3JgZ4zD-NHNvRCENtsmz8wpwYhXDu9XxqYj4BfHvk-yG3JsKyXXYj9WXnmQ_HHWoHzX1R8BnZW4-mJHsQWMGyiAI3L7RUuhsyHF_8xlGGkhPh0Tqz3lsqVUH5iyZF5izZZydTMEQVhTHjVhxFC6VaD_RVlMFav8_GVxQxJwvkiBETx9tisc9P6vg9_jz_WD9kvLS5zU9u-zmQNKSIUvjvJY3O0S-gJXMcfKDnLFmwYvE-YEqIWH232C9TgWEO3WVZyTXd-tmFQYxOJV5TNeVGwIRYcA.en2Z75quU48peYAVZzt7QQ\")",
+      "Bash(npx -y @netlify/mcp@latest --site-id ce8c9cd3-962e-49f9-9cf9-5bb369b6b4d4 --proxy-path \"https://netlify-mcp.netlify.app/proxy/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..u-mxvAhUPVrJODTD.04Vt2N9QgbhYG9jB2V5HYcyiVXd7Ts5EoeGcW0tK5CU3L2OmZV6jmKvkdXxtvC6yFeIHQ__07ek4DF79Xw8ROut0rDVAkkZxIjpkTXSB7eTlpED2lxbgBT22Z1ftnqXbCF-O7Shl55M2rTDGeBqc3-vcWB4MwgwMFEi8nsPN_9jfcrvtoW-eKKHm58qqX5u7OuxegzQeH66ZdiVQg37WbDeQM3n7GPkmQij8Yn4GNr0BtL--80Q5CRBDmUJPXYgQZ1Tno35zicH6NT2zagv5XvTWL1bBUn4Y1eOSimFcZwqKky3FTXDAxuaECvI5L6nQQ9K19z73PY8TCxKCOBIQlAUhteDCqL1alOQE3t3Gv0Foo9GW2g.wWMWW_q0_V52lwBGbTvqRQ\")",
+      "Bash(npx -y @netlify/mcp@latest --site-id ce8c9cd3-962e-49f9-9cf9-5bb369b6b4d4 --proxy-path \"https://netlify-mcp.netlify.app/proxy/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..Hfe5WyUzs6Yb2qfn.giQgEoCwzjdwgwCgUlGlCjo7ce_xz9KojfG9lfvikJwy_qZl0ycFFmUrijzlnDU3VskoIQecD1ODeUtcBvPHMnMgAZ-mhJAA0IQ0MTLpeLVQt3SfYzmnxkKJaDAD_heuLd1v-EfupnwceIitZ1Ds4NwW7fPvY6HVGbUxii-RNy-aG1ohrpuuCSbRxKFKNUpxq2YbzzdJc2kKbbAOxBsfxvEifMULr_fewgetUooKlWzccnozEeAC7A8EOMRyCkavhTjcTQDFRBD4V1kElk1i3gtcTqdsm4mvFsOQCh9JmlWPGiR-PRAX0nPsf1FaHISVHEWlurUYwTVUK_2UBa12uKZZMSikWBvk0b9zL3-AMavDaUb6VQ.nbQKznsMjxD7JXAz1-BQ2g\")",
+      "Bash(npx -y @netlify/mcp@latest --site-id ce8c9cd3-962e-49f9-9cf9-5bb369b6b4d4 --proxy-path \"https://netlify-mcp.netlify.app/proxy/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..3TWHOiiqXVpE61J1.QPx4BuVa2FqK679fRSmrJ_w1bgXQNQkkMOzS8wO6n-2rqwxnZBUvgSw3ZscV8Kwyv4kb99aOb59HeH7EYiPmgJydAOhdDrJFEns5FsHOMbfaPXED0I6Jj2phjMu7gAtxKPIgI5iNyHvSracI3v4a0MU1oxJbls79c8eS5H4IOy9lLikMSfMyYiR-DPCcJPD1QMekFQodgot8yvSIPA1pl4SUtkciUflGAvzaNFA8aExLEQDiOgZjiS98MuKXUEVtJcpZDdHOdp4oeCyxSLZ4-NTGTbPnE5kVQxHq3gbNp0uN8xvbO_DJ5uJa4LfXmRAHUw40Nr2AvJzS6D-BH7szLYk1aHAkWC4Y6pjKRc29wleXB5UB0A.c9wYUe64OjknxZKlTRThMg\")",
+      "Bash(npx -y @netlify/mcp@latest --site-id ce8c9cd3-962e-49f9-9cf9-5bb369b6b4d4 --proxy-path \"https://netlify-mcp.netlify.app/proxy/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..lYQMArqcA0ldPWB3.4ZDFipp8hp9X5TyIT3avhvrVA_i0B3ZlZO-SQHa-G6AFvefFdiktUhKZruGnpRbse3_RXdr8FRl6gE9tu2oCS9UXCCzdvC6D58UwDIPkbhhJEwV5PGhfB3ga3QTUmsMoEUIPRmgXY4Bm8PFKWA-_NEW3b5meMEWl_I4IxhnODukib0m4Ubxb16fmf06uluJgJP5fwDmNmKng6_4tgPOshl7Q4t7qSwHMqQMRKWvHE6ycSzOg61rSA2Bl-aRADc68q-wVFDR1gsvoXULX8xNfpehplJEdla4blpPIj57mtmoCf0xSpnNP7W_0M9t1EJ9qrB1evaa_5IRNfnrByf9go6ojgzulMLO_KdZI_w-Hgqyh-nSUdA.6R86SFNa493m5bxGQyfC1w\")",
+      "Bash(git status:*)",
+      "Bash(gh auth:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}

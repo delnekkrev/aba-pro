@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Sort by Shape</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@700;800;900&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0A142F;
+    --blue-dark: #1b4a6b;
+    --blue-mid: #2b6d91;
+    --green: #33CB98;
+    --green-dark: #28a87d;
+    --red: #e74c3c;
+    --bg: #f0f8ff;
+    --white: #ffffff;
+    --border: #c8e0ef;
+    --shadow: 0 6px 24px rgba(0,100,150,.15);
+    --font-h: 'Gabarito', sans-serif;
+    --font-b: 'Inter', sans-serif;
+    --bucket-size: 140px;
+    --item-size: 68px;
+    --item-in-bucket: 46px;
+  }
+
+  body {
+    font-family: var(--font-b);
+    background: linear-gradient(160deg, #dff0fb 0%, #c8e6f5 50%, #d8eaf8 100%);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    width: 100%;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue-dark) 100%);
+    padding: 16px 16px 14px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .page-header h1 {
+    font-family: var(--font-h);
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: .02em;
+    margin-bottom: 10px;
+  }
+  .header-controls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: none;
+    font-family: var(--font-b);
+    font-size: .82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-primary { background: var(--green); color: #fff; box-shadow: 0 3px 10px rgba(51,203,152,.4); }
+  .btn-primary:active { background: var(--green-dark); transform: scale(.96); }
+  .btn-outline { background: rgba(255,255,255,.15); color: #fff; border: 1.5px solid rgba(255,255,255,.4); }
+  .btn-outline:active { background: rgba(255,255,255,.25); }
+
+  /* ── SCORE BANNER ── */
+  .score-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background: rgba(255,255,255,.8);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(0,128,128,.12);
+    padding: 8px 16px;
+    width: 100%;
+  }
+  .score-item { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+  .score-num {
+    font-family: var(--font-h);
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--blue-mid);
+    line-height: 1;
+  }
+  .score-lbl {
+    font-size: .6rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #6a8fa8;
+  }
+  .score-divider { width: 1px; height: 28px; background: var(--border); }
+
+  /* ── MAIN LAYOUT ── */
+  .game-area {
+    width: 100%;
+    max-width: 480px;
+    padding: 16px 12px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    flex: 1;
+  }
+
+  /* ── BUCKET ROW ── */
+  .buckets-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: nowrap;
+  }
+
+  .bucket {
+    width: var(--bucket-size);
+    height: var(--bucket-size);
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #4a9fd4 0%, var(--blue-mid) 45%, var(--blue-dark) 100%);
+    box-shadow: inset 0 4px 14px rgba(0,0,0,.25), 0 6px 20px rgba(10,50,90,.25);
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px;
+    transition: transform .2s, filter .2s;
+    cursor: default;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .bucket.dragover-active {
+    transform: scale(1.08);
+    filter: brightness(1.2) drop-shadow(0 0 14px rgba(51,203,152,.6));
+  }
+  .bucket.bucket-correct {
+    box-shadow: inset 0 4px 14px rgba(0,0,0,.25), 0 0 0 4px var(--green), 0 6px 20px rgba(10,50,90,.25);
+  }
+  .bucket.bucket-wrong {
+    animation: bucket-shake .4s ease;
+  }
+  @keyframes bucket-shake {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
+  }
+
+  /* count badge */
+  .bucket-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: var(--navy);
+    color: #fff;
+    font-family: var(--font-h);
+    font-size: .75rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    line-height: 1;
+    transition: transform .2s;
+    opacity: 0;
+  }
+  .bucket-count.visible { opacity: 1; }
+  .bucket-count.bump { animation: count-bump .25s ease; }
+  @keyframes count-bump { 0%{transform:scale(1)} 50%{transform:scale(1.4)} 100%{transform:scale(1)} }
+
+  /* ── ITEM POOL ── */
+  .pool-section {
+    background: rgba(255,255,255,.72);
+    backdrop-filter: blur(8px);
+    border: 2px dashed var(--border);
+    border-radius: 20px;
+    padding: 16px 12px;
+    box-shadow: var(--shadow);
+    flex: 1;
+  }
+  .pool-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    min-height: 80px;
+    align-content: start;
+  }
+  .pool-grid.dragover-active {
+    background: rgba(0,128,128,.06);
+    border-radius: 12px;
+  }
+
+  /* ── DRAG ITEMS ── */
+  .drag-item {
+    width: var(--item-size);
+    height: var(--item-size);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: grab;
+    border-radius: 12px;
+    transition: transform .15s, box-shadow .15s;
+    position: relative;
+    flex-shrink: 0;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .drag-item:active { cursor: grabbing; }
+  .drag-item.dragging {
+    opacity: .35;
+    transform: scale(0.85);
+  }
+
+  /* inside buckets items are smaller */
+  .bucket .drag-item {
+    width: var(--item-in-bucket);
+    height: var(--item-in-bucket);
+    border-radius: 8px;
+    cursor: grab;
+  }
+
+  /* ── SUCCESS OVERLAY ── */
+  .success-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,20,47,.65);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+  .success-overlay.show { opacity: 1; pointer-events: all; }
+  .success-box {
+    background: #fff;
+    border-radius: 28px;
+    padding: 36px 28px 28px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,.3);
+    transform: scale(.85);
+    transition: transform .3s;
+    max-width: 320px;
+    width: 90%;
+  }
+  .success-overlay.show .success-box { transform: scale(1); }
+  .success-emoji {
+    font-size: 3.5rem;
+    line-height: 1;
+    margin-bottom: 12px;
+    animation: pop-in .4s .1s both;
+  }
+  @keyframes pop-in { from{transform:scale(.3);opacity:0} to{transform:scale(1);opacity:1} }
+  .success-title {
+    font-family: var(--font-h);
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .success-sub {
+    font-size: .9rem;
+    color: #6a8fa8;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: .84rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity .25s, transform .25s;
+    z-index: 300;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.green { background: var(--green-dark); }
+  .toast.red { background: var(--red); }
+
+  /* ── GHOST (floating drag clone) ── */
+  #drag-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 999;
+    width: var(--item-size);
+    height: var(--item-size);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 12px;
+    opacity: .88;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,.3));
+    display: none;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  /* ── MODE TOGGLE ── */
+  .mode-toggle {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .mode-btn {
+    padding: 7px 18px;
+    border-radius: 999px;
+    border: 2px solid rgba(255,255,255,.35);
+    font-family: var(--font-b);
+    font-size: .8rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: rgba(255,255,255,.12);
+    color: rgba(255,255,255,.7);
+    transition: all .18s;
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: .03em;
+  }
+  .mode-btn.active {
+    background: #fff;
+    color: var(--navy);
+    border-color: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.2);
+  }
+  .mode-btn:not(.active):active { background: rgba(255,255,255,.22); }
+
+  /* ── RESPONSIVE — slightly larger on tablets ── */
+  @media (min-width: 420px) {
+    :root {
+      --bucket-size: 160px;
+      --item-size: 74px;
+      --item-in-bucket: 50px;
+    }
+    .game-area { max-width: 520px; padding: 20px 16px 40px; }
+  }
+  @media (min-width: 600px) {
+    :root {
+      --bucket-size: 180px;
+      --item-size: 80px;
+      --item-in-bucket: 54px;
+    }
+    .game-area { max-width: 600px; }
+    .page-header h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <h1>Sort by Shape</h1>
+  <div class="mode-toggle">
+    <button class="mode-btn" id="mode2btn" onclick="setMode(2)">2 Shapes</button>
+    <button class="mode-btn active" id="mode3btn" onclick="setMode(3)">3 Shapes</button>
+  </div>
+  <div class="header-controls">
+    <button class="btn btn-primary" onclick="checkAll()">Check Answers</button>
+    <button class="btn btn-outline" onclick="shufflePool()">Shuffle</button>
+    <button class="btn btn-outline" onclick="resetGame()">Reset</button>
+  </div>
+</div>
+
+<!-- SCORE -->
+<div class="score-banner">
+  <div class="score-item">
+    <div class="score-num" id="scorePlaced">0</div>
+    <div class="score-lbl">Placed</div>
+  </div>
+  <div class="score-divider"></div>
+  <div class="score-item">
+    <div class="score-num" id="scoreTotal">12</div>
+    <div class="score-lbl">Total</div>
+  </div>
+  <div class="score-divider"></div>
+  <div class="score-item">
+    <div class="score-num" id="scoreGroups">0/3</div>
+    <div class="score-lbl" id="scoreGroupsLbl">Groups</div>
+  </div>
+</div>
+
+<!-- GAME AREA -->
+<div class="game-area">
+
+  <!-- BUCKETS (rendered dynamically by JS) -->
+  <div class="buckets-row" id="bucketsRow"></div>
+
+  <!-- ITEM POOL -->
+  <div class="pool-section">
+    <div class="pool-grid" id="pool"></div>
+  </div>
+
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div class="success-emoji">🎉</div>
+    <div class="success-title">Amazing!</div>
+    <div class="success-sub" id="successSub">All shapes grouped correctly!</div>
+    <button class="btn btn-primary" style="width:100%;padding:14px;font-size:.95rem;" onclick="resetGame()">Play Again</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- DRAG GHOST -->
+<div id="drag-ghost"></div>
+
+<script>
+// ── ALL ITEMS ──────────────────────────────────────────────────────────────
+const ALL_ITEMS = [
+  // CIRCLES
+  { id: 'beach-ball',  shape: 'circle',   src: 'shapes/circle-ball.avif'   },
+  { id: 'donut',       shape: 'circle',   src: 'shapes/circle-donut.avif'  },
+  { id: 'clock',       shape: 'circle',   src: 'shapes/circle.avif'        },
+  { id: 'pizza-round', shape: 'circle',   src: 'shapes/circle-2.avif'      },
+  // SQUARES
+  { id: 'cracker',     shape: 'square',   src: 'shapes/69637366-of-square-crackers-isolated-on-white-background-small-load-of-bread.jpg' },
+  { id: 'pillow',      shape: 'square',   src: 'shapes/Square Pillow.png'  },
+  { id: 'baking-pan',  shape: 'square',   src: 'shapes/square.jpg'         },
+  { id: 'table',       shape: 'square',   src: 'shapes/Square+Wood+Dining+Table+for+4.webp' },
+  // TRIANGLES
+  { id: 'ruler',       shape: 'triangle', src: 'shapes/triangle-2.jpg'     },
+  { id: 'chips',       shape: 'triangle', src: 'shapes/triangular-flat-crispy-cracker-small-260nw-2633325641.webp' },
+  { id: 'pizza-slice', shape: 'triangle', src: 'shapes/square-2.jpg'       },
+  { id: 'watermelon',  shape: 'triangle', src: 'shapes/triangle.avif'      },
+];
+
+const ALL_SHAPES = ['circle', 'square', 'triangle'];
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let currentMode    = 3;          // 2 or 3
+let activeShapes   = [];         // shapes used this round
+let activeBuckets  = [];         // bucket id strings e.g. ['0','1'] or ['0','1','2']
+let activeItems    = [];         // items filtered by activeShapes (shuffled)
+let placedIn       = {};         // { itemId: 'pool' | '0' | '1' | '2' }
+let dragId         = null;
+
+// ── MODE SELECTOR ──────────────────────────────────────────────────────────
+function setMode(n) {
+  if (n === currentMode) return;
+  currentMode = n;
+  document.getElementById('mode2btn').classList.toggle('active', n === 2);
+  document.getElementById('mode3btn').classList.toggle('active', n === 3);
+  startRound();
+}
+
+// ── ROUND SETUP ───────────────────────────────────────────────────────────
+function startRound() {
+  document.getElementById('successOverlay').classList.remove('show');
+
+  // Pick shapes for this round
+  const shuffledShapes = [...ALL_SHAPES].sort(() => Math.random() - .5);
+  activeShapes  = shuffledShapes.slice(0, currentMode);
+  activeBuckets = activeShapes.map((_, i) => String(i));
+
+  // Filter + shuffle items
+  activeItems = ALL_ITEMS.filter(it => activeShapes.includes(it.shape));
+  for (let i = activeItems.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [activeItems[i], activeItems[j]] = [activeItems[j], activeItems[i]];
+  }
+
+  // Reset placement
+  placedIn = {};
+  activeItems.forEach(it => { placedIn[it.id] = 'pool'; });
+
+  buildBucketDOM();
+  setupBucketDropZones();
+  setupPoolDropZone();
+  renderAll();
+}
+
+// ── BUILD BUCKET DOM ──────────────────────────────────────────────────────
+function buildBucketDOM() {
+  const row = document.getElementById('bucketsRow');
+  row.innerHTML = '';
+  activeBuckets.forEach(bid => {
+    const div = document.createElement('div');
+    div.className = 'bucket';
+    div.id = 'bucket-' + bid;
+    div.setAttribute('data-bucket', bid);
+    const badge = document.createElement('span');
+    badge.className = 'bucket-count';
+    badge.id = 'count-' + bid;
+    badge.textContent = '0';
+    div.appendChild(badge);
+    row.appendChild(div);
+  });
+}
+
+// ── DROP ZONE EVENTS ──────────────────────────────────────────────────────
+function setupBucketDropZones() {
+  activeBuckets.forEach(bid => {
+    const el = document.getElementById('bucket-' + bid);
+    el.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      el.classList.add('dragover-active');
+    });
+    el.addEventListener('dragleave', e => {
+      if (!el.contains(e.relatedTarget)) el.classList.remove('dragover-active');
+    });
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      el.classList.remove('dragover-active');
+      dropItem(e.dataTransfer.getData('text/plain') || dragId, bid);
+    });
+  });
+}
+
+function setupPoolDropZone() {
+  const pool = document.getElementById('pool');
+  pool.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    pool.classList.add('dragover-active');
+  });
+  pool.addEventListener('dragleave', e => {
+    if (!pool.contains(e.relatedTarget)) pool.classList.remove('dragover-active');
+  });
+  pool.addEventListener('drop', e => {
+    e.preventDefault();
+    pool.classList.remove('dragover-active');
+    dropItem(e.dataTransfer.getData('text/plain') || dragId, 'pool');
+  });
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function renderAll() {
+  const pool = document.getElementById('pool');
+  const bucketEls = {};
+
+  activeBuckets.forEach(bid => {
+    const el = document.getElementById('bucket-' + bid);
+    const badge = el.querySelector('.bucket-count');
+    el.innerHTML = '';
+    el.appendChild(badge);
+    bucketEls[bid] = el;
+  });
+  pool.innerHTML = '';
+
+  activeItems.forEach(item => {
+    const where = placedIn[item.id];
+    const el = makeItemEl(item);
+    if (where === 'pool') pool.appendChild(el);
+    else bucketEls[where].appendChild(el);
+  });
+
+  updateCounts();
+  updateScore();
+}
+
+function makeItemEl(item) {
+  const el = document.createElement('div');
+  el.className = 'drag-item';
+  el.id = 'item-' + item.id;
+  el.setAttribute('draggable', 'true');
+  el.setAttribute('data-id', item.id);
+  el.setAttribute('data-shape', item.shape);
+  el.style.backgroundImage = `url('${item.src}')`;
+  el.addEventListener('dragstart', onDragStart);
+  el.addEventListener('dragend', onDragEnd);
+  return el;
+}
+
+// ── DESKTOP DRAG ──────────────────────────────────────────────────────────
+function onDragStart(e) {
+  dragId = e.currentTarget.getAttribute('data-id');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', dragId);
+  setTimeout(() => e.currentTarget.classList.add('dragging'), 0);
+}
+function onDragEnd(e) { e.currentTarget.classList.remove('dragging'); }
+
+function dropItem(id, dest) {
+  if (!id) return;
+  placedIn[id] = dest;
+  clearCheckStyles();
+  renderAll();
+  bumpCount(dest);
+}
+
+function bumpCount(dest) {
+  if (dest === 'pool') return;
+  const el = document.getElementById('count-' + dest);
+  if (!el) return;
+  el.classList.remove('bump');
+  void el.offsetWidth;
+  el.classList.add('bump');
+}
+
+// ── TOUCH DRAG ────────────────────────────────────────────────────────────
+let touchItem = null;
+const ghost = document.getElementById('drag-ghost');
+
+function setupTouch() {
+  document.addEventListener('touchstart', touchStart, { passive: false });
+  document.addEventListener('touchmove',  touchMove,  { passive: false });
+  document.addEventListener('touchend',   touchEnd,   { passive: false });
+}
+
+function touchStart(e) {
+  const target = e.target.closest('.drag-item');
+  if (!target) return;
+  e.preventDefault();
+  touchItem = target;
+  dragId    = target.getAttribute('data-id');
+  ghost.style.backgroundImage = target.style.backgroundImage;
+  ghost.style.display = 'block';
+  moveTouchGhost(e.touches[0]);
+  target.classList.add('dragging');
+}
+
+function touchMove(e) {
+  if (!touchItem) return;
+  e.preventDefault();
+  moveTouchGhost(e.touches[0]);
+  clearDragoverHighlights();
+  const zone = getDropZoneAtPoint(e.touches[0].clientX, e.touches[0].clientY);
+  if (zone) zone.classList.add('dragover-active');
+}
+
+function touchEnd(e) {
+  if (!touchItem) return;
+  ghost.style.display = 'none';
+  touchItem.classList.remove('dragging');
+  clearDragoverHighlights();
+  const t = e.changedTouches[0];
+  const zone = getDropZoneAtPoint(t.clientX, t.clientY);
+  if (zone) {
+    const bid = zone.getAttribute('data-bucket');
+    dropItem(dragId, bid !== null ? bid : 'pool');
+  }
+  touchItem = null;
+  dragId    = null;
+}
+
+function moveTouchGhost(touch) {
+  ghost.style.left = touch.clientX + 'px';
+  ghost.style.top  = touch.clientY + 'px';
+}
+
+function getDropZoneAtPoint(x, y) {
+  for (const bid of activeBuckets) {
+    const el = document.getElementById('bucket-' + bid);
+    if (!el) continue;
+    const r = el.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return el;
+  }
+  const pool = document.getElementById('pool');
+  const pr = pool.getBoundingClientRect();
+  if (x >= pr.left && x <= pr.right && y >= pr.top && y <= pr.bottom) return pool;
+  return null;
+}
+
+function clearDragoverHighlights() {
+  document.querySelectorAll('.dragover-active').forEach(el => el.classList.remove('dragover-active'));
+}
+
+// ── GAME LOGIC ────────────────────────────────────────────────────────────
+function updateCounts() {
+  activeBuckets.forEach(bid => {
+    const count = activeItems.filter(i => placedIn[i.id] === bid).length;
+    const el = document.getElementById('count-' + bid);
+    if (!el) return;
+    el.textContent = count;
+    el.classList.toggle('visible', count > 0);
+  });
+}
+
+function updateScore() {
+  const placed = activeItems.filter(i => placedIn[i.id] !== 'pool').length;
+  const groups = countCorrectGroups();
+  document.getElementById('scorePlaced').textContent   = placed;
+  document.getElementById('scoreTotal').textContent    = activeItems.length;
+  document.getElementById('scoreGroups').textContent   = groups + '/' + currentMode;
+}
+
+function countCorrectGroups() {
+  let correct = 0;
+  activeBuckets.forEach(bid => {
+    const items = activeItems.filter(i => placedIn[i.id] === bid);
+    if (items.length === 0) return;
+    const shapes = new Set(items.map(i => i.shape));
+    if (shapes.size === 1) correct++;
+  });
+  return correct;
+}
+
+function isFullyCorrect() {
+  const allPlaced = activeItems.every(i => placedIn[i.id] !== 'pool');
+  return allPlaced && countCorrectGroups() === currentMode;
+}
+
+function clearCheckStyles() {
+  activeBuckets.forEach(bid => {
+    const el = document.getElementById('bucket-' + bid);
+    if (el) el.classList.remove('bucket-correct', 'bucket-wrong');
+  });
+}
+
+function checkAll() {
+  const placed = activeItems.filter(i => placedIn[i.id] !== 'pool').length;
+  if (placed === 0) { showToast('Drag some pictures into the circles first!', 'red'); return; }
+
+  clearCheckStyles();
+  let correctCount = 0;
+  activeBuckets.forEach(bid => {
+    const items = activeItems.filter(i => placedIn[i.id] === bid);
+    if (items.length === 0) return;
+    const shapes = new Set(items.map(i => i.shape));
+    const el = document.getElementById('bucket-' + bid);
+    if (shapes.size === 1) { el.classList.add('bucket-correct'); correctCount++; }
+    else                   { el.classList.add('bucket-wrong'); }
+  });
+
+  if (isFullyCorrect()) {
+    document.getElementById('successSub').textContent = 'All shapes grouped perfectly! Great job!';
+    document.getElementById('successOverlay').classList.add('show');
+  } else if (correctCount > 0) {
+    showToast(`${correctCount}/${currentMode} groups correct — keep going!`, 'green');
+  } else {
+    showToast('Not quite — try grouping the same shapes together!', 'red');
+  }
+}
+
+function resetGame() {
+  document.getElementById('successOverlay').classList.remove('show');
+  activeItems.forEach(item => { placedIn[item.id] = 'pool'; });
+  clearCheckStyles();
+  renderAll();
+  showToast('Board reset!');
+}
+
+function shufflePool() {
+  activeItems.forEach(item => { placedIn[item.id] = 'pool'; });
+  for (let i = activeItems.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [activeItems[i], activeItems[j]] = [activeItems[j], activeItems[i]];
+  }
+  clearCheckStyles();
+  renderAll();
+  showToast('Shuffled!');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = 'toast', 2600);
+}
+
+// ── CLOSE SUCCESS ON BACKDROP ─────────────────────────────────────────────
+document.getElementById('successOverlay').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('show');
+});
+
+// ── START ─────────────────────────────────────────────────────────────────
+setupTouch();
+setupPoolDropZone();
+startRound();
+</script>
+</body>
+</html>
