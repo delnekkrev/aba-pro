@@ -24,7 +24,7 @@
   --sh-sm:0 1px 6px rgba(0,128,128,.07); --sh-md:0 4px 20px rgba(0,128,128,.1); --sh-lg:0 8px 32px rgba(0,128,128,.15);
   --font-h:'Gabarito',sans-serif; --font-b:'Inter',sans-serif;
 }
-html,body{height:100%;overflow:hidden;}
+html,body{height:100%;overflow:hidden;background:#fff;}
 body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
 .app{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:430px;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.12);box-sizing:border-box;padding-top:env(safe-area-inset-top);}
 .screens{flex:1;overflow:hidden;position:relative;}
@@ -395,7 +395,7 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
 .sub-header{display:flex;align-items:center;gap:12px;padding:16px 18px 12px;border-bottom:1px solid var(--border);background:#fff;flex-shrink:0;}
 .sub-back{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--navy);padding:4px 6px 4px 0;line-height:1;}
 .sub-title{font-family:var(--font-h);font-size:1.1rem;font-weight:700;color:var(--navy);}
-.sub-body{padding:20px 18px 90px;overflow-y:auto;flex:1;}
+.sub-body{padding:20px 18px calc(68px + env(safe-area-inset-bottom));overflow-y:auto;flex:1;}
 
 /* ── EDIT PROFILE ── */
 .ep-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:white;margin:0 auto 20px;}
@@ -449,7 +449,7 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
 .about-app-name{font-family:var(--font-h);font-size:1.7rem;font-weight:800;color:white;margin-bottom:4px;}
 .about-version{font-size:.78rem;color:rgba(255,255,255,.55);background:rgba(255,255,255,.12);padding:3px 12px;border-radius:var(--r-pill);display:inline-block;margin-bottom:10px;}
 .about-tagline{font-size:.85rem;color:rgba(255,255,255,.7);line-height:1.6;max-width:280px;}
-.about-body{padding:20px 20px 80px;overflow-y:auto;flex:1;}
+.about-body{padding:20px 20px calc(68px + env(safe-area-inset-bottom));overflow-y:auto;flex:1;}
 .about-section{margin-bottom:22px;}
 .about-section-title{font-family:var(--font-h);font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 .about-card{background:var(--white);border-radius:var(--r-lg);border:1px solid var(--border);overflow:hidden;box-shadow:var(--sh-sm);}
@@ -486,7 +486,7 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
 .az-btn{flex-shrink:0;width:28px;height:28px;border-radius:var(--r-sm);border:1.5px solid var(--border);background:var(--white);font-family:var(--font-b);font-size:.72rem;font-weight:700;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .az-btn.active{background:var(--teal);border-color:var(--teal);color:white;}
 .az-btn.inactive{opacity:.35;cursor:default;}
-.glossary-list{padding:12px 18px 80px;overflow-y:auto;flex:1;}
+.glossary-list{padding:12px 18px calc(68px + env(safe-area-inset-bottom));overflow-y:auto;flex:1;}
 .glossary-count{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:10px;letter-spacing:.03em;}
 .glossary-letter-group{margin-bottom:4px;}
 .glossary-letter-heading{font-family:var(--font-h);font-size:1rem;font-weight:800;color:var(--teal);padding:10px 0 4px;border-bottom:2px solid var(--teal-light);margin-bottom:8px;}
@@ -505,6 +505,7 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
 .glossary-no-results .emoji{font-size:2.5rem;margin-bottom:12px;}
 .glossary-no-results p{font-size:.88rem;}
 </style>
+<script>(function(){function setH(){var h=window.visualViewport?window.visualViewport.height:window.innerHeight;document.documentElement.style.setProperty('--app-height',h+'px');}setH();window.addEventListener('resize',setH);if(window.visualViewport)window.visualViewport.addEventListener('resize',setH);})();</script>
 </head>
 <body>
 <div class="app">
@@ -604,7 +605,7 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
 
         </div>
       </div>
-      <div style="overflow-y:auto;flex:1;padding-bottom:10px;">
+      <div style="overflow-y:auto;flex:1;padding-bottom:calc(68px + env(safe-area-inset-bottom));">
         <div class="dash-section">
           <div class="section-label" style="margin-top:18px">Current Track</div>
           <div id="dashTrack"><!-- rendered by JS --></div>
@@ -621,7 +622,7 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
         <h1>Curated Learning</h1>
         <p>Master ABA fundamentals with focus-driven study materials.</p>
       </div>
-      <div style="overflow-y:auto;flex:1;">
+      <div style="overflow-y:auto;flex:1;padding-bottom:calc(68px + env(safe-area-inset-bottom));">
         <div class="training-content">
           <div class="mode-cards">
             <div class="mode-card active" id="modeFlashcards" onclick="setTrainingMode('flashcards')">
@@ -696,7 +697,7 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
         <h1>Curriculum Lessons</h1>
         <p>Study BT training materials slide by slide.</p>
       </div>
-      <div style="overflow-y:auto;flex:1;">
+      <div style="overflow-y:auto;flex:1;padding-bottom:calc(68px + env(safe-area-inset-bottom));">
         <div class="training-content">
           <button class="btn btn-outline btn-sm" onclick="goTo('training')" style="margin-bottom:18px">← Back to Training</button>
           <div class="section-label">Training Modules</div>
@@ -741,7 +742,7 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
         <h1>Stimulus Library</h1>
         <p>Visual discrimination targets for session use.</p>
       </div>
-      <div style="overflow-y:auto;flex:1;">
+      <div style="overflow-y:auto;flex:1;padding-bottom:calc(68px + env(safe-area-inset-bottom));">
         <div class="stim-content">
           <div class="search-bar" id="helperSearchBar">
             <span>🔍</span>
@@ -889,7 +890,7 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
 
     <!-- PROFILE -->
     <div class="screen" id="screen-profile">
-      <div style="overflow-y:auto;flex:1;">
+      <div style="overflow-y:auto;flex:1;padding-bottom:calc(68px + env(safe-area-inset-bottom));">
         <div class="profile-header">
           <div class="profile-avatar" id="profileAvatar">K</div>
           <div class="profile-name" id="profileName">—</div>
@@ -1826,7 +1827,7 @@ function goTo(name) {
     target.scrollTop = 0;
     currentScreen = name;
     const nav = document.querySelector('.bottom-nav');
-    if (nav) nav.style.display = authScreens.includes(name) ? 'none' : '';
+    if (nav) nav.style.display = (authScreens.includes(name) || name === 'lesson-player') ? 'none' : '';
     document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
     const nt = navScreens.includes(name) ? name : (name==='flashcards'||name==='quiz'||name==='lessons'||name==='lesson-player' ? 'training' : name==='trial' ? 'helper' : (name==='about'||name==='edit-profile'||name==='my-progress'||name==='notifications') ? 'profile' : '');
     if(nt) document.getElementById('nav-'+nt)?.classList.add('active');
