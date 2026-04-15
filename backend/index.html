@@ -744,19 +744,11 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
       </div>
       <div style="overflow-y:auto;flex:1;padding-bottom:calc(68px + env(safe-area-inset-bottom));">
         <div class="stim-content">
-          <div class="search-bar" id="helperSearchBar">
-            <span>🔍</span>
-            <input type="text" placeholder="Search stimuli…" id="stimSearch" oninput="filterStimuli()">
-          </div>
           <div class="view-toggle" style="flex-wrap:wrap">
-            <button class="vt-btn active" id="vtLib" onclick="setView('library')">📚 Library</button>
-            <button class="vt-btn" id="vtEchoic" onclick="setView('echoic')">🗣️ Echoics</button>
+            <button class="vt-btn active" id="vtEchoic" onclick="setView('echoic')">🗣️ Echoics</button>
             <button class="vt-btn" id="vtDnD" onclick="setView('dnd')">🧩 Exercises</button>
-            <button class="vt-btn" id="vtTacting" onclick="setView('tacting')">🖐️ Tacting</button>
             <button class="vt-btn" id="vtToken" onclick="setView('token')">⭐ Token Board</button>
           </div>
-          <div class="chip-row" id="stimFilter"></div>
-          <div id="stimLibrary"></div>
           <div id="stimTrialSetup" style="display:none"></div>
           
           <div id="stimEchoic" style="display:none; margin-top:16px;">
@@ -768,28 +760,6 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
             <div id="echoicLists" style="background:white;padding:16px;border-radius:12px;border:1px solid var(--border);box-shadow:var(--sh-sm);"></div>
           </div>
           
-          <div id="stimTacting" style="display:none; margin-top:16px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-              <div class="section-label" style="margin-bottom:0;">Tacting Actions</div>
-            </div>
-            <div style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;">Show each image to your learner and ask: <em>"What is he/she doing?"</em> Tap any card to present it full screen.</div>
-            <div id="tactGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;"></div>
-          </div>
-
-          <!-- Tacting fullscreen modal -->
-          <div id="tactModal" class="tact-modal" onclick="closeTactModal(event)">
-            <div class="tact-modal-box">
-              <button class="tact-close" onclick="document.getElementById('tactModal').style.display='none'">✕</button>
-              <img id="tactModalImg" class="tact-modal-img" src="" alt="">
-              <div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px;">
-                <button onclick="tactPrev()" class="btn btn-outline btn-xs">← Prev</button>
-                <button onclick="tactSwapPhoto()" class="btn btn-ghost btn-xs">🔄 Other Photo</button>
-                <button onclick="tactNext()" class="btn btn-teal btn-xs">Next →</button>
-              </div>
-              <div id="tactIndicator" style="text-align:center;font-size:0.75rem;color:var(--muted);"></div>
-            </div>
-          </div>
-
           <!-- Pronouns fullscreen modal -->
           <div id="pronModal" class="tact-modal" onclick="closePronModal(event)">
             <div class="tact-modal-box">
@@ -828,6 +798,16 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);-webkit-fo
                 </div>
               </a>
             </div>
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+  <div class="section-label" style="margin-bottom:10px;">Tacting Resources</div>
+  <a href="https://tealwayaba-my.sharepoint.com/:w:/p/emmar/IQBWIVc7lU2LQaj4K_D3kuTjAbXbfaPoSn_w3sGh7pMc6Ig?e=KnShDE" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:14px;background:var(--white);border-radius:var(--r-lg);border:1px solid var(--border);padding:16px;text-decoration:none;box-shadow:var(--sh-sm);">
+    <div style="width:44px;height:44px;border-radius:var(--r-md);background:var(--teal-faint);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">🖐️</div>
+    <div style="flex:1;">
+      <div style="font-family:var(--font-h);font-size:.95rem;font-weight:700;color:var(--navy);">Tacting Actions</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">Open tacting resource guide →</div>
+    </div>
+  </a>
+</div>
           </div>
 
           <!-- TOKEN BOARD -->
@@ -1807,7 +1787,7 @@ let selectedCat = 'All';
 let filteredCards = [...flashcards];
 let fcIndex = 0, fcSeen = 0;
 let quizPool = [], quizIndex = 0, quizScore = 0, quizAnswered = false;
-let stimView = 'library', stimCat = 'All';
+let stimView = 'trial', stimCat = 'All';
 let currentStimItem = null, fieldSize = 2, trialRevealed = false, trialImages = [];
 
 
@@ -2117,7 +2097,28 @@ const lessonModules = [
       {title:'Making the SCR Call', points:['Provide your direct contact info and an alternate number at the START of the call (in case you get disconnected).','You can speak for the child or seek clarification if necessary — you are the reporter.','Do not put the child on the phone unless absolutely necessary.','Keep in mind LCPS may need to reach you after business hours.']},
       {title:'After the Call & Phone Tips', points:['If a report is registered: send your completed LDSS-2221A form to Local Child Protective Service (LCPS) within 48 hours.','Do NOT release the SCR worker\'s name to anyone.','Use a landline whenever possible. Avoid speakerphone.','If you must use speakerphone, identify who is speaking for proper attribution.','Do NOT call the SCR to report complaints about a local district worker — call the district or OCFS regional office directly.']},
     ]
-  }
+  },
+  {
+  key:'session-notes', icon:'📋', iconCls:'deck-icon-amber',
+  title:'Writing Session Notes',
+  desc:'Learn how to document every session accurately — participants, techniques, setting events, and reinforcers.',
+  slides:[
+    {title:'What Is a Session Note?', points:['A legal document — required every single session.','Proves the session happened and is required for insurance billing.','Tells your BCBA what happened when they weren\'t there.','Required by the BACB and reviewed during audits.','Becomes part of the learner\'s permanent clinical record.','Key rule: If it\'s not documented, it didn\'t happen.']},
+    {title:'The 3 Tabs in the App', points:['General — Session date, time, location, and duration. Filled in before or at the start of session.','Observations — Behavior data and trial-by-trial results. Filled during the session as you run programs.','Session Note — The written summary. Completed after the session ends, before you leave.','Important: The Session Note tab pulls from your Observations data automatically. Accurate data entry = accurate note.']},
+    {title:'Participants — Who to Include', points:['Always check: Learner + Behavior Technician — every single session, no exceptions.','Add a participant only if a parent, caregiver, or supervisor was actively present and involved in the session.','Do NOT add a parent just because they were home in another room.','Example — Don\'t add: Parent was home but in the kitchen.','Example — Add: Parent sat in and practiced a program with guidance.']},
+    {title:'Intervention Techniques — The Rule', points:['Only check what you actually used. Do not check every technique by default.','This is a legal record of what happened in the session — checking unused techniques is a compliance issue.','If your session was all table work (DTT), don\'t check Social Skills Training unless you actually worked on it.','Reinforcement should almost always be checked — you\'re delivering reinforcers in nearly every session.']},
+    {title:'Which Technique Did You Use?', points:['Discrete Trial Training (DTT) — Structured table work: clear SD → response → consequence → ITI.','Natural Environment Teaching (NET) — Teaching within play or daily routines using the learner\'s natural motivation.','Functional Communication Training (FCT) — Teaching a replacement behavior (PECS, sign, words) instead of a problem behavior.','Modeling — You demonstrated an action for the learner to imitate ("Do this" programs).','Prompting — You used any prompt hierarchy during trials (physical, gestural, verbal, visual).','Reinforcement — You delivered reinforcers to increase a target behavior. Almost always checked.','Differential Reinforcement (DR) — You used DRO, DRA, DRI, or DRL to reduce a problem behavior.','Shaping / Chaining — You reinforced successive approximations or broke a skill into sequential steps.','Social Skills Training — You worked on turn-taking, greetings, play skills, or peer interaction.','Exercise & Movement — Movement was a planned part of the session.','Visual Supports — You used a token board, picture schedule, or visual timer.','Caregiver / Parent Training — You coached a caregiver on how to implement a program or strategy.']},
+    {title:'Session Insights — Reading the Data', points:['This section is auto-filled from your trial data — you do not type here.','Improving Scores = programs where the learner is making progress over time.','Incomplete Scores = programs that were run but didn\'t have enough trials to calculate a score yet — this is normal.','If scores look wrong, fix your trial data in Observations first. The insights update automatically.']},
+    {title:'Setting Events — Never Leave This Blank', points:['A setting event is anything that happened before or during the session that could affect how the learner behaved.','Examples: illness, poor sleep, schedule changes, new environment, medical events.','This section gives your BCBA context for why data looked the way it did today.','Always use what the caregiver reported — not your own guess.','If nothing unusual happened, still write: "No notable setting events reported. Learner transitioned into session without difficulty."']},
+    {title:'Setting Events — Good vs. Bad Examples', points:['❌ "He was off today" → ✅ "Caregiver reported learner slept approximately 4 hours last night."','❌ "Bad behavior all session" → ✅ "Learner arrived dysregulated. Caregiver noted a schedule change this morning."','❌ "Seemed tired" → ✅ "Learner rubbed eyes throughout session. Caregiver confirmed early wake time."','❌ "Lots of tantrums" → ✅ "Learner had a medical appointment prior to session per caregiver report."','❌ (left blank) → ✅ "No notable setting events reported. Learner transitioned into session without difficulty."','Rule: Describe behavior and report facts. No opinions, no interpretations, no diagnoses.']},
+    {title:'Preferences & Reinforcers — Be Specific', points:['Name the actual reinforcer — not just "food" or "toys."','Include how it was delivered (1 piece per trial, 30-second access, etc.).','Note if something stopped working mid-session — that\'s clinically useful.','❌ "Toys" → ✅ "Mini M&Ms (1 piece per trial) and 30-sec iPad access between programs."','❌ "Food and praise" → ✅ "Skittles (1 piece), verbal praise, and tickles were effective throughout."','❌ "He liked his tablet" → ✅ "30-sec YouTube on iPad was highly effective. Praise alone was insufficient."']},
+    {title:'Objective Language — The Golden Rule', points:['Write only what you saw and what was reported to you. Never interpret, diagnose, or give opinions.','❌ "He was frustrated" → ✅ "Learner vocalized loudly and pushed materials off the table."','❌ "She was having a good day" → ✅ "Learner responded to first SD independently on 9/10 trials."','❌ "He was being manipulative" → ✅ "Learner requested breaks 6 times during the session."','❌ "Seemed anxious" → ✅ "Learner rocked in chair and avoided eye contact during transitions."','❌ "He was being difficult" → ✅ "Learner dropped to floor 3 times during table-work transitions."']},
+    {title:'Common Mistakes to Avoid', points:['Leaving Setting Events blank — Even if nothing happened, write the default sentence.','Checking all techniques — Only check what you actually used. This is a legal record.','Vague reinforcers — "Toys" and "food" aren\'t useful. Name the specific item and how it was delivered.','Writing opinions — "He was frustrated" is an interpretation. Describe what you saw instead.','Completing the note later — Notes should be done before you leave. Late notes are a billing risk.','Ignoring wrong data — If Session Insights look off, fix the trial data in Observations before submitting.']},
+    {title:'Scenario Practice — Weston', points:['Scenario: 2-hour DTT session with Weston. You ran 4 programs at the table using physical and verbal prompts. You used Mini M&Ms every trial. Weston\'s mom told you he didn\'t sleep well. He had 3 instances of hitting during transitions.','✅ Techniques: DTT, Prompting, Reinforcement — nothing else.','✅ Setting Events: "Caregiver reported learner had difficulty sleeping the previous night."','✅ Reinforcers: "Mini M&Ms (1 piece per trial) were effective as primary reinforcer throughout the session."','✅ Behaviors: "Learner engaged in hitting (open hand) 3 times during transition between programs. No injury occurred. BCBA notified."']},
+    {title:'Scenario Practice — Maya', points:['Scenario: Great session with Maya. You used her token board the whole time (5 tokens = iPad). You ran NET in the living room — no table work. No behaviors. Mom was home but watching TV. Nothing unusual happened.','✅ Participants: Learner + BT only — do NOT add mom (she wasn\'t involved).','✅ Techniques: Reinforcement, Visual Supports (token board) — do NOT check DTT (you ran NET, not DTT).','✅ Setting Events: "No notable setting events reported. Learner transitioned into session without difficulty."','✅ Reinforcers: "Token board (5 tokens = 2 min iPad) was effective. Learner independently requested tokens twice."']},
+    {title:'5-Point Checklist Before You Submit', points:['1. Participants are correct — Learner + BT at minimum.','2. Only techniques I actually used are checked.','3. Setting Events is filled in — even if nothing happened.','4. Reinforcers section names the specific item + how it was delivered.','5. Trial data in Observations is accurate — Session Insights will reflect it.']}
+  ]
+}
 ];
 
 let currentLessonKey = null;
@@ -2218,26 +2219,17 @@ function buildStimFilter(){ const cats=['All',...Object.keys(sessionCategories)]
 function setStimCat(cat){ stimCat=cat; buildStimFilter(); renderStimLibrary(); }
 function setView(v){
   stimView=v;
-  document.getElementById('vtLib').classList.toggle('active',v==='library');
   document.getElementById('vtEchoic').classList.toggle('active',v==='echoic');
   document.getElementById('vtDnD').classList.toggle('active',v==='dnd');
-  document.getElementById('vtTacting').classList.toggle('active',v==='tacting');
   document.getElementById('vtToken').classList.toggle('active',v==='token');
 
-  document.getElementById('stimLibrary').style.display=v==='library'?'':'none';
   document.getElementById('stimTrialSetup').style.display=v==='trial'?'':'none';
   document.getElementById('stimEchoic').style.display=v==='echoic'?'':'none';
   document.getElementById('stimDnD').style.display=v==='dnd'?'':'none';
-  document.getElementById('stimTacting').style.display=v==='tacting'?'':'none';
   document.getElementById('stimToken').style.display=v==='token'?'':'none';
-
-  const hideControls = (v==='dnd' || v==='echoic' || v==='tacting' || v==='token');
-  document.getElementById('helperSearchBar').style.display=hideControls?'none':'flex';
-  document.getElementById('stimFilter').style.display=hideControls?'none':'flex';
 
   if(v==='trial') renderTrialSetup();
   if(v==='echoic') renderEchoics();
-  if(v==='tacting') renderTacting();
   if(v==='token') renderTokenSlots();
 }
 function filterStimuli(){ renderStimLibrary(); }
